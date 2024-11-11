@@ -4,9 +4,9 @@ FROM python:3.9-slim
 # Set environment variables
 ENV VLLM_TARGET_DEVICE=cpu
 
-# Install system dependencies
+# Install system dependencies, including CMake
 RUN apt-get update -y && \
-    apt-get install -y gcc-12 g++-12 git && \
+    apt-get install -y gcc-12 g++-12 cmake git && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10 --slave /usr/bin/g++ g++ /usr/bin/g++-12
 
 # Upgrade pip and install additional required Python packages
