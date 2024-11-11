@@ -4,10 +4,16 @@ FROM python:3.9-slim
 # Set environment variables
 ENV VLLM_TARGET_DEVICE=cpu
 
-# Install system dependencies, including CMake
+# Install system dependencies, including the latest CMake from Kitware
 RUN apt-get update -y && \
-    apt-get install -y gcc-12 g++-12 cmake git && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10 --slave /usr/bin/g++ g++ /usr/bin/g++-12
+    apt-get install -y gcc-12 g++-12 git wget && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10 --slave /usr/bin/g++ g++ /usr/bin/g++-12 && \
+    # Add Kitware APT repository for the latest CMake
+    wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg && \
+    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y cmake && \
+    rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and install additional required Python packages
 RUN pip install --upgrade pip && \
