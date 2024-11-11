@@ -6,7 +6,7 @@ ENV VLLM_TARGET_DEVICE=cpu
 
 # Install system dependencies, including the latest CMake from Kitware
 RUN apt-get update -y && \
-    apt-get install -y gcc-12 g++-12 git wget && \
+    apt-get install -y gcc-12 g++-12 git wget gpg && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10 --slave /usr/bin/g++ g++ /usr/bin/g++-12 && \
     # Add Kitware APT repository for the latest CMake
     wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg && \
