@@ -4,16 +4,15 @@ FROM python:3.9-slim
 # Set environment variables
 ENV VLLM_TARGET_DEVICE=cpu
 
-# Install system dependencies, including the latest CMake from Kitware
+# Install system dependencies
 RUN apt-get update -y && \
     apt-get install -y gcc-12 g++-12 git wget gpg && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10 --slave /usr/bin/g++ g++ /usr/bin/g++-12 && \
-    # Add Kitware APT repository for the latest CMake
-    wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg && \
-    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list > /dev/null && \
-    apt-get update && \
-    apt-get install -y cmake && \
-    rm -rf /var/lib/apt/lists/*
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10 --slave /usr/bin/g++ g++ /usr/bin/g++-12
+
+# Download and install CMake binary to avoid dependency issues
+RUN wget -q https://github.com/Kitware/CMake/releases/download/v3.26.4/cmake-3.26.4-linux-x86_64.tar.gz && \
+    tar -zxvf cmake-3.26.4-linux-x86_64.tar.gz --strip-components=1 -C /usr/local && \
+    rm cmake-3.26.4-linux-x86_64.tar.gz
 
 # Upgrade pip and install additional required Python packages
 RUN pip install --upgrade pip && \
