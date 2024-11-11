@@ -3,7 +3,6 @@ FROM python:3.9-slim
 
 # Set environment variables
 ENV VLLM_TARGET_DEVICE=cpu
-ARG VLLM_CPU_DISABLE_AVX=ON
 
 # Install system dependencies
 RUN apt-get update -y && \
@@ -31,10 +30,8 @@ RUN pip install -v -r requirements-cpu.txt --extra-index-url https://download.py
 # Create a dummy version file to avoid relying on .git metadata (if the repo lacks a .git directory)
 RUN echo "0.1.0" > version.txt
 
-# Build and install the vLLM package with AVX disabled
-RUN cmake -DVLLM_CPU_DISABLE_AVX=${VLLM_CPU_DISABLE_AVX} -S . -B build && \
-    cmake --build build && \
-    cmake --install build
+# Build and install the vLLM package
+RUN python setup.py install
 
 # Expose the web server on port 8432
 EXPOSE 8432
