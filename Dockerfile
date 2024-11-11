@@ -18,7 +18,9 @@ COPY ./vllm ./vllm
 WORKDIR ./vllm
 
 # Install Python dependencies and build vLLM
-RUN pip install -v -r requirements-cpu.txt --extra-index-url https://download.pytorch.org/whl/cpu
+RUN pip install -v -r requirements-cpu.txt --extra-index-url https://download.pytorch.org/whl/cpu && \
+    pip install setuptools_scm
+
 RUN python setup.py install
 
 # Expose the web server on port 8432
